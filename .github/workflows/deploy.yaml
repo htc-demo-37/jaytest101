@@ -51,6 +51,13 @@ jobs:
       - run: docker build --platform linux/amd64 . -t $CONTAINER_REGISTRY/$IMAGE:$TAG
       - run: docker push $CONTAINER_REGISTRY/$IMAGE:$TAG
 
+      - run: echo "${{ secrets.ACR_PUSH_SP_PASSWORD }}" | docker login \
+              ${{ secrets.ACR_SERVER_NAME }} \
+              -u ${{ secrets.ACR_PUSH_SP_ID }} \
+              --password-stdin
+
+      - run: docker push $CONTAINER_REGISTRY/$IMAGE:$TAG
+
       - name: Inform Humanitec
         run: |-
           curl \
